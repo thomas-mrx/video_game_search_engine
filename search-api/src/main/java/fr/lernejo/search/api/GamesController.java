@@ -26,11 +26,11 @@ public class GamesController {
     }
 
     @GetMapping("/api/games")
-    List<Map<String, Object>> searchGames(@RequestParam String query) throws IOException {
-        if (query == null) {
-            return null;
+    List<Map<String, Object>> searchGames(@RequestParam(value = "query", required = false) List<String> query) throws IOException {
+        if (query == null || query.size() == 0) {
+            throw new RuntimeException("No query param given.");
         }
-        QueryStringQueryBuilder queryBuilder = QueryBuilders.queryStringQuery(query);
+        QueryStringQueryBuilder queryBuilder = QueryBuilders.queryStringQuery(query.get(0));
         SearchRequest searchRequest = new SearchRequest();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(queryBuilder);
