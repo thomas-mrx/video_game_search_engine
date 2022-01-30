@@ -1,10 +1,8 @@
 package fr.lernejo.fileinjector;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Duration;
 
@@ -13,18 +11,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class LauncherTest {
 
     @Test
-    void main_terminates_before_5_sec() {
+    void main_terminates_before_10_sec() {
         File resourcesDirectory = new File("src/test/resources");
         String file = resourcesDirectory.getAbsolutePath()+"/games.json";
         assertTimeoutPreemptively(
-            Duration.ofSeconds(5L),
+            Duration.ofSeconds(10L),
             () -> Launcher.main(new String[]{file}));
     }
 
     @Test
     void no_file() {
         assertTimeoutPreemptively(
-            Duration.ofSeconds(5L),
+            Duration.ofSeconds(10L),
             () -> Launcher.main(new String[]{}));
     }
 
