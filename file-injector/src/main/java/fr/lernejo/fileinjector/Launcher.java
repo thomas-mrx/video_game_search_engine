@@ -13,6 +13,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
@@ -20,33 +22,21 @@ import java.util.Map;
 @SpringBootApplication
 public class Launcher {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         try (AbstractApplicationContext springContext = new AnnotationConfigApplicationContext(Launcher.class)) {
             if (args.length == 1) {
-                try {
-                    ObjectMapper mapper = new ObjectMapper();
-                    List<Map<String, Object>> map = mapper.readValue(Paths.get(args[0]).toFile(), new TypeReference<>() {});
-
-                    RabbitTemplate rabbitTemplate = springContext.getBean(RabbitTemplate.class);
-                    rabbitTemplate.setRoutingKey("game_info");
-
-                    for (Map<?, ?> el : map) {
-                        try {
-                            String orderJson = new ObjectMapper().writeValueAsString(el);
-                            Message message = MessageBuilder
-                                .withBody(orderJson.getBytes())
-                                .setContentType(MessageProperties.CONTENT_TYPE_JSON)
-                                .setHeader("game_id", el.get("id"))
-                                .build();
-                            rabbitTemplate.convertAndSend(message);
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                ObjectMapper mapper = new ObjectMapper();
+                List<Map<String, Object>> map = mapper.readValue(Paths.get(args[0]).toFile(), new TypeReference<>() {});
+                RabbitTemplate rabbitTemplate = springContext.getBean(RabbitTemplate.class);
+                rabbitTemplate.setRoutingKey("game_info");
+                for (Map<?, ?> el : map) {
+                    String orderJson = new ObjectMapper().writeValueAsString(el);
+                    Message message = MessageBuilder
+                        .withBody(orderJson.getBytes())
+                        .setContentType(MessageProperties.CONTENT_TYPE_JSON)
+                        .setHeader("game_id", el.get("id"))
+                        .build();
+                    rabbitTemplate.convertAndSend(message);
                 }
             }
         }
