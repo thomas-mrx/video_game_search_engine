@@ -23,4 +23,6 @@ jobs:
                   echo $JAVA_HOME
             - run: ./mvnw verify
             - uses: codecov/codecov-action@v1
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
 
