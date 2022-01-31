@@ -1,4 +1,4 @@
-# Template for the Video Game Search Engine project
+# Video Game Search Engine - thomas-mrx
 
 [![build workflow](https://github.com/thomas-mrx/video_game_search_engine/actions/workflows/build.yml/badge.svg)](https://github.com/thomas-mrx/video_game_search_engine/actions)
 [![codecov](https://codecov.io/gh/thomas-mrx/video_game_search_engine/branch/main/graph/badge.svg)](https://codecov.io/gh/thomas-mrx/video_game_search_engine)
