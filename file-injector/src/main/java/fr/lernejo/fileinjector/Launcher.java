@@ -31,11 +31,7 @@ public class Launcher {
                 rabbitTemplate.setRoutingKey("game_info");
                 for (Map<?, ?> el : map) {
                     String orderJson = new ObjectMapper().writeValueAsString(el);
-                    Message message = MessageBuilder
-                        .withBody(orderJson.getBytes())
-                        .setContentType(MessageProperties.CONTENT_TYPE_JSON)
-                        .setHeader("game_id", el.get("id"))
-                        .build();
+                    Message message = MessageBuilder.withBody(orderJson.getBytes()).setContentType(MessageProperties.CONTENT_TYPE_JSON).setHeader("game_id", el.get("id")).build();
                     rabbitTemplate.convertAndSend(message);
                 }
             }

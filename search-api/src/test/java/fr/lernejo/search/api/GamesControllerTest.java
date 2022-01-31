@@ -26,7 +26,6 @@ class GamesControllerTest {
         mockMvc
             .perform(MockMvcRequestBuilders.get("/api/games").param("query", "developer:\"Epic Games\""))
             .andExpect(MockMvcResultMatchers.status().isOk());
-            //.andExpect(jsonPath("$").isEmpty());
     }
 
     @Test

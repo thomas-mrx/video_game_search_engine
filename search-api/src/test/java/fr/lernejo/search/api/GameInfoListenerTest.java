@@ -23,32 +23,21 @@ public class GameInfoListenerTest {
         try (AbstractApplicationContext springContext = new AnnotationConfigApplicationContext(Launcher.class)) {
             RabbitTemplate rabbitTemplate = springContext.getBean(RabbitTemplate.class);
             rabbitTemplate.setRoutingKey("game_info");
-            Message message = MessageBuilder
-                .withBody("{}".getBytes())
-                .setContentType(MessageProperties.CONTENT_TYPE_JSON)
-                .build();
+            Message message = MessageBuilder.withBody("{}".getBytes()).setContentType(MessageProperties.CONTENT_TYPE_JSON).build();
             rabbitTemplate.convertAndSend(message);
         }
-    }
-
-    static String load_test_json() throws IOException {
-        File resourcesDirectory = new File("src/test/resources");
-        String file = resourcesDirectory.getAbsolutePath()+"/game.json";
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> map = mapper.readValue(Paths.get(file).toFile(), new TypeReference<>() {});
-        return new ObjectMapper().writeValueAsString(map);
     }
 
     @Test
     void listener_ok(){
         try (AbstractApplicationContext springContext = new AnnotationConfigApplicationContext(Launcher.class)) {
+            File resourcesDirectory = new File("src/test/resources");
+            String file = resourcesDirectory.getAbsolutePath()+"/game.json";
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> map = mapper.readValue(Paths.get(file).toFile(), new TypeReference<>() {});
             RabbitTemplate rabbitTemplate = springContext.getBean(RabbitTemplate.class);
             rabbitTemplate.setRoutingKey("game_info");
-            Message message = MessageBuilder
-                .withBody(load_test_json().getBytes())
-                .setContentType(MessageProperties.CONTENT_TYPE_JSON)
-                .setHeader("game_id","42")
-                .build();
+            Message message = MessageBuilder.withBody(new ObjectMapper().writeValueAsString(map).getBytes()).setContentType(MessageProperties.CONTENT_TYPE_JSON).setHeader("game_id","42").build();
             rabbitTemplate.convertAndSend(message);
         } catch (IOException e) {
             e.printStackTrace();
