@@ -21,7 +21,7 @@ jobs:
             - run: |
                   java -version
                   echo $JAVA_HOME
-            - run: docker-compose up
+            - run: docker-compose up -d
             - run: ./mvnw verify
             - uses: codecov/codecov-action@v1
               with:
