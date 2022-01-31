@@ -31,16 +31,10 @@ public class GamesController {
             throw new RuntimeException("No query param given.");
         }
         QueryStringQueryBuilder queryBuilder = QueryBuilders.queryStringQuery(query.get(0));
-        SearchRequest searchRequest = new SearchRequest();
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(queryBuilder);
-        searchRequest.source(searchSourceBuilder);
+        SearchRequest searchRequest = new SearchRequest().source(SearchSourceBuilder.searchSource().query(queryBuilder));
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         List<Map<String, Object>> result = new ArrayList<>();
-        SearchHit[] searchHits = searchResponse.getHits().getHits();
-        for (SearchHit hit : searchHits) {
-            result.add(hit.getSourceAsMap());
-        }
+        searchResponse.getHits().forEach(hit -> result.add(hit.getSourceAsMap()));
         return result;
     }
 
